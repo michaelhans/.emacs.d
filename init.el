@@ -9,6 +9,10 @@
 (menu-bar-mode 0)
 (tool-bar-mode 0)
 
+;;Tabs to Spaces
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+
 ;;Set Load Path
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
 
@@ -16,3 +20,4 @@
 (autoload 'markdown-mode "markdown-mode.el" 
   "Major mode for editing Markdown files" t) 
 (setq auto-mode-alist (cons '("\\.md" . markdown-mode) auto-mode-alist))
+(put 'upcase-region 'disabled nil)
