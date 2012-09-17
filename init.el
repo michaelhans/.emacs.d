@@ -49,3 +49,6 @@
         perl-indent-parens-as-block t                                                                                                                                                                                                        
         perl-tab-always-indent t))                                                                                                                                                                                                           
 (add-hook 'perl-mode-hook 'orb-perl-mode-hook)
+
+;; Open a shell
+(shell)
