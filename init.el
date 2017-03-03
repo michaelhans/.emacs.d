@@ -1,54 +1,87 @@
-;; Remove Splash Screen
-(setq inhibit-splash-screen t)
+;;; init.el --- Michael Hans "Dumpster Fire" configuration
+;;; Commentary:
+;;; Code:
 
-;;Show Column and Line Numbers
+;; Visual Appearance
+(setq inhibit-splash-screen t)
 (setq line-number-mode t)
 (setq column-number-mode t)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
 
-;;Remove Menu and Tool Bar's
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(if (fboundp 'tool-bar-mode  ) (tool-bar-mode   -1))
-(if (fboundp 'menu-bar-mode  ) (menu-bar-mode   -1))
-
-;; IDO Mode                                                                                                                                                                                                      
-(require 'ido)   
-
-;; Make Commands easier on laptop keyboard
-(global-set-key "\C-x\C-m" 'execute-extended-command)
-(global-set-key "\C-c\C-m" 'execute-extended-command)
+;; IDO Mode
+(require 'ido)
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
 
 ;; Tabs to Spaces
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 
-;; Solarized Theme
-(add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/emacs-color-theme-solarized/")
-(load-theme 'solarized-dark t)
+;; Make Commands easier on laptop keyboard
+(global-set-key "\C-c\C-m" 'execute-extended-command)
 
-;;Set Load Path
-(add-to-list 'load-path "~/.emacs.d/site-lisp/")
+;; Allow easy frame switching without loosing layout
+(windmove-default-keybindings)
 
-;;Configure Markdown Mode
-(autoload 'markdown-mode "markdown-mode.el" 
-  "Major mode for editing Markdown files" t) 
-(setq auto-mode-alist (cons '("\\.md" . markdown-mode) auto-mode-alist))
+;; Some Package Stuff to refactor
+(require 'package)
+(add-to-list   'package-archives
+               '("melpa" . "http://melpa.org/packages/")
+               t)
+(package-initialize)
 
+;; Some list of packages to refactor later
+(defvar package-list '(zenburn-theme
+                     yasnippet
+                     whitespace-cleanup-mode
+                     restclient
+                     magit
+                     exec-path-from-shell
+                     jinja2-mode
+                     flycheck
+                     yaml-mode
+                     ))
+
+;; Check if package meta stuff has content, otherwise refresh
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+;; install packages (if they don't exist)
+(dolist (package package-list)
+  (when (not (package-installed-p package))
+    (package-install package)))
+
+;; Push $PATH from shell when in GUI mode
+(exec-path-from-shell-initialize)
+(exec-path-from-shell-copy-env "GOPATH")
+
+;; Load theme (moved away from solarized, crazy world)
+(load-theme 'zenburn t)
+
+;; Enable yasnippet
+(yas-global-mode 1)
+
+
+(load-file ".emacs.d/lisp/go.el")
+(load-file ".emacs.d/lisp/js.el")
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;;; init.el ends here
 (custom-set-variables
- ;; Enable IDO Mode
- '(ido-everywhere t)
- '(ido-mode (quote both) nil (ido))
- ;; Unique Buffers with Same Names
- '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify)))
-(custom-set-faces)                                                                                                                                                                                                                           
-
-;; AOL Specific Perl stuff
-(defun orb-perl-mode-hook ()                                                                                                                                                                                                                 
-  (setq perl-indent-level 2
-        perl-close-paren-offset -2                                                                                                                                                                                                           
-        perl-continued-statement-offset 2                                                                                                                                                                                                    
-        perl-indent-parens-as-block t                                                                                                                                                                                                        
-        perl-tab-always-indent t))                                                                                                                                                                                                           
-(add-hook 'perl-mode-hook 'orb-perl-mode-hook)
-
-;; Open a shell
-(shell)
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (zenburn-theme yasnippet yaml-mode whitespace-cleanup-mode restclient magit jinja2-mode exec-path-from-shell))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
