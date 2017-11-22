@@ -43,7 +43,7 @@
                      jinja2-mode
                      flycheck
                      yaml-mode
-                     multimarkdownmode
+                     markdown-mode
                      ))
 
 ;; Check if package meta stuff has content, otherwise refresh
